@@ -1,7 +1,9 @@
 /**
  * Entry point
- * Defines the canvas and traingles and border vertices 
+ * Defines the screen resolution, canvas and traingles and border vertices 
  */
+
+document.querySelector("#resolution").innerHTML = `Screen Resolution: ${(window.screen.height * window.devicePixelRatio)}*${window.screen.width * window.devicePixelRatio}`
 
 const canvas = document.querySelector("#canvas");
 
