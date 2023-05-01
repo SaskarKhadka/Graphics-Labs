@@ -145,6 +145,8 @@ function shearY() {
 }
 
 function reset() {
+  document.querySelector(".operation").innerHTML = "";
+
   vertices = [
     normalise(250, canvasWidth),
     normalise(250, canvasWidth),
