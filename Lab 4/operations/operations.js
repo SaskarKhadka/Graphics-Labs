@@ -42,7 +42,6 @@ function createAxes() {
 }
 
 function createInitialTriangle() {
-  console.log(vertices);
   createTriangle(vertices);
 }
 
@@ -51,10 +50,15 @@ createInitialTriangle();
 
 function translate() {
   document.querySelector(".operation").innerHTML = "Translating by (0.1, 0.1)";
+  const transformationMatrix = translationMatrix(0.1, 0.1);
   let translatedVertices = [];
   for (let i = 0; i < vertices.length; i = i + 3) {
-    translatedVertices.push(vertices[i] + 0.1);
-    translatedVertices.push(vertices[i + 1] + 0.1);
+    const result = multiplyMatrices(
+      transformationMatrix,
+      [[vertices[i]], [vertices[i + 1]], [1]] // homogenous
+    );
+    translatedVertices.push(result[0]);
+    translatedVertices.push(result[1]);
     translatedVertices.push(0);
   }
   vertices = translatedVertices;
@@ -64,16 +68,16 @@ function translate() {
 function rotate() {
   document.querySelector(".operation").innerHTML =
     "Rotating by 45 degree anticlockwise about origin";
+  const transformationMatrix = rotationMatrix((Math.PI / 180) * 45);
+
   let rotatedVertices = [];
   for (let i = 0; i < vertices.length; i = i + 3) {
-    rotatedVertices.push(
-      vertices[i] * Math.cos((Math.PI / 180) * 45) -
-        vertices[i + 1] * Math.sin((Math.PI / 180) * 45)
+    const result = multiplyMatrices(
+      transformationMatrix,
+      [[vertices[i]], [vertices[i + 1]], [1]] // homogenous
     );
-    rotatedVertices.push(
-      vertices[i] * Math.sin((Math.PI / 180) * 45) +
-        vertices[i + 1] * Math.cos((Math.PI / 180) * 45)
-    );
+    rotatedVertices.push(result[0]);
+    rotatedVertices.push(result[1]);
     rotatedVertices.push(0);
   }
   vertices = rotatedVertices;
@@ -83,22 +87,34 @@ function rotate() {
 function scale() {
   document.querySelector(".operation").innerHTML =
     "Scaling by factor (2, 2) aboout origin";
+  const transformationMatrix = scalingMatrix(2, 2);
+
   let scaledVertices = [];
   for (let i = 0; i < vertices.length; i = i + 3) {
-    scaledVertices.push(vertices[i] * 2);
-    scaledVertices.push(vertices[i + 1] * 2);
+    const result = multiplyMatrices(
+      transformationMatrix,
+      [[vertices[i]], [vertices[i + 1]], [1]] // homogenous
+    );
+    scaledVertices.push(result[0]);
+    scaledVertices.push(result[1]);
     scaledVertices.push(0);
   }
   vertices = scaledVertices;
   createAxes();
   createTriangle(vertices);
 }
+
 function reflectX() {
   document.querySelector(".operation").innerHTML = "Reflecting along X-axis";
+  const transformationMatrix = xReflectionMatrix();
   let reflectedVertices = [];
   for (let i = 0; i < vertices.length; i = i + 3) {
-    reflectedVertices.push(vertices[i]);
-    reflectedVertices.push(vertices[i + 1] * -1);
+    const result = multiplyMatrices(
+      transformationMatrix,
+      [[vertices[i]], [vertices[i + 1]], [1]] // homogenous
+    );
+    reflectedVertices.push(result[0]);
+    reflectedVertices.push(result[1]);
     reflectedVertices.push(0);
   }
   vertices = reflectedVertices;
@@ -108,10 +124,15 @@ function reflectX() {
 
 function reflectY() {
   document.querySelector(".operation").innerHTML = "Reflecting along Y-axis";
+  const transformationMatrix = yReflectionMatrix();
   let reflectedVertices = [];
   for (let i = 0; i < vertices.length; i = i + 3) {
-    reflectedVertices.push(vertices[i] * -1);
-    reflectedVertices.push(vertices[i + 1]);
+    const result = multiplyMatrices(
+      transformationMatrix,
+      [[vertices[i]], [vertices[i + 1]], [1]] // homogenous
+    );
+    reflectedVertices.push(result[0]);
+    reflectedVertices.push(result[1]);
     reflectedVertices.push(0);
   }
   vertices = reflectedVertices;
@@ -121,25 +142,36 @@ function reflectY() {
 
 function shearX() {
   document.querySelector(".operation").innerHTML = "Shearing along X-axis by 2";
-  let reflectedVertices = [];
+  const transformationMatrix = xShearMatrix(2);
+  let shearedVertices = [];
   for (let i = 0; i < vertices.length; i = i + 3) {
-    reflectedVertices.push(vertices[i] + 2 * vertices[i + 1]);
-    reflectedVertices.push(vertices[i + 1]);
-    reflectedVertices.push(0);
+    const result = multiplyMatrices(
+      transformationMatrix,
+      [[vertices[i]], [vertices[i + 1]], [1]] // homogenous
+    );
+    shearedVertices.push(result[0]);
+    shearedVertices.push(result[1]);
+    shearedVertices.push(0);
   }
-  vertices = reflectedVertices;
+  vertices = shearedVertices;
   createAxes();
   createTriangle(vertices);
 }
 
 function shearY() {
   document.querySelector(".operation").innerHTML = "Shearing along Y-axis by 2";
-  let reflectedVertices = [];
+  const transformationMatrix = yShearMatrix(2);
+  let shearedVertices = [];
   for (let i = 0; i < vertices.length; i = i + 3) {
-    reflectedVertices.push(vertices[i]);
-    reflectedVertices.push(vertices[i + 1] + 2 * vertices[i]);
-    reflectedVertices.push(0);
+    const result = multiplyMatrices(
+      transformationMatrix,
+      [[vertices[i]], [vertices[i + 1]], [1]] // homogenous
+    );
+    shearedVertices.push(result[0]);
+    shearedVertices.push(result[1]);
+    shearedVertices.push(0);
   }
+  vertices = shearedVertices;
   createAxes();
   createTriangle(vertices);
 }
