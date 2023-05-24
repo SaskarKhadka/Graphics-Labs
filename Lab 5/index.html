@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Line Clipping</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <!-- <div class="note">All mentioned coordinates are device coordinates</div> -->
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <button type="button" class="btn btn-secondary" id="random-line">
+        Random Line
+      </button>
+      <button type="button" class="btn btn-secondary" id="cohen-sutherland">
+        Cohen Sutherland
+      </button>
+      <button type="button" class="btn btn-secondary" id="random-polygon">
+        Random Polygon
+      </button>
+      <button type="button" class="btn btn-secondary" id="sutherland-hodgeman">
+        Sutherland Hodgeman
+      </button>
+      <button type="button" class="btn btn-secondary" id="reset">Reset</button>
+    </div>
+    <br />
+    <div class="operation"></div>
+    <canvas id="canvas" height="600" width="800" style="background: black">
+    </canvas>
+    <script src="./main.js"></script>
+    <script src="./glinit.js"></script>
+    <script src="./shapes/line.js"></script>
+    <script src="./shapes/point.js"></script>
+    <script src="./operations/viewport.js"></script>
+    <script src="./operations/drawRandomLine.js"></script>
+    <script src="./operations/drawRandomPolygon.js"></script>
+    <script src="./operations/cohenSutherland.js"></script>
+    <script src="./operations/sutherlandHodgeman.js"></script>
+    <script src="./operations/reset.js"></script>
+  </body>
+</html>
