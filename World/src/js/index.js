@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils";
-import { createNoise2D } from "simplex-noise";
 import simplex from "perlin-simplex";
 
 import dirtTexture from "../assets/dirt.png";
@@ -22,7 +21,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(-17, 31, 33);
+camera.position.set(-17, 40, 40);
 // camera.position.set(0, 0, 30);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -87,7 +86,7 @@ const DIRT2_HEIGHT = MAX_HEIGHT * 0;
       let position = tileToPosition(i, j);
 
       if (position.length() > 16) continue;
-      const noise2D = createNoise2D();
+      //   const noise2D = createNoise2D();
       const myNoise = new simplex();
       let noise = (myNoise.noise(i * 0.1, j * 0.1) + 1) * 0.55;
       noise = Math.pow(noise, 1.5);
@@ -100,7 +99,7 @@ const DIRT2_HEIGHT = MAX_HEIGHT * 0;
   let dirt2Mesh = hexMesh(dirt2Geometries, textures.dirt2);
   let dirtMesh = hexMesh(dirtGeometries, textures.dirt);
   let sandMesh = hexMesh(sandGeometries, textures.sand);
-  scene.add(stoneMesh, grassMesh, dirt2Mesh, dirtMesh, sandMesh);
+  //   scene.add(stoneMesh, grassMesh, dirt2Mesh, dirtMesh, sandMesh);
 
   let seaMesh = new THREE.Mesh(
     new THREE.CylinderGeometry(17, 17, MAX_HEIGHT * 0.2, 50),
@@ -121,7 +120,7 @@ const DIRT2_HEIGHT = MAX_HEIGHT * 0;
 
   seaMesh.receiveShadow = true;
   seaMesh.position.set(0, MAX_HEIGHT * 0.1, 0);
-  scene.add(seaMesh);
+  //   scene.add(seaMesh);
 
   let mapContainer = new THREE.Mesh(
     new THREE.CylinderGeometry(17.1, 17.1, MAX_HEIGHT * 0.25, 50, 1, true),
@@ -135,7 +134,7 @@ const DIRT2_HEIGHT = MAX_HEIGHT * 0;
 
   mapContainer.receiveShadow = true;
   mapContainer.position.set(0, MAX_HEIGHT * 0.125, 0);
-  scene.add(mapContainer);
+  //   scene.add(mapContainer);
 
   let mapFloor = new THREE.Mesh(
     new THREE.CylinderGeometry(18.5, 18.5, MAX_HEIGHT * 0.1, 50),
@@ -149,9 +148,31 @@ const DIRT2_HEIGHT = MAX_HEIGHT * 0;
 
   mapFloor.receiveShadow = true;
   mapFloor.position.set(0, -MAX_HEIGHT * 0.05, 0);
-  scene.add(mapFloor);
+  //   scene.add(mapFloor);
 
-  clouds();
+  const cloudMesh = clouds();
+
+  const meshesToAdd = [
+    mapFloor,
+    mapContainer,
+    seaMesh,
+    dirt2Mesh,
+    sandMesh,
+    dirtMesh,
+    grassMesh,
+    stoneMesh,
+    cloudMesh,
+  ];
+  for (let i = 0; i < meshesToAdd.length; i++) {
+    scene.add(meshesToAdd[i]);
+    await new Promise((resolve) =>
+      setTimeout(() => {
+        // signalOff();
+        resolve();
+      }, 1000)
+    );
+    renderer.render(scene, camera);
+  }
 
   renderer.setAnimationLoop(() => {
     renderer.render(scene, camera);
@@ -250,8 +271,7 @@ function tree(height, position) {
 
 function clouds() {
   let geo = new THREE.SphereGeometry(0, 0, 0);
-  let count = Math.floor(Math.pow(Math.random(), 0.45) * 4);
-  console.log(count);
+  let count = Math.floor(Math.random() * 4 + 1);
 
   for (let i = 0; i < count; i++) {
     const puff1 = new THREE.SphereGeometry(1.2, 7, 7);
@@ -271,18 +291,19 @@ function clouds() {
       Math.random() * 20 - 10
     );
     cloudGeo.rotateY(Math.random() * Math.PI * 2);
+    // let scaleFactor = Math.random() + 0.5;
+    // cloudGeo.scale(scaleFactor, scaleFactor, scaleFactor);
 
     geo = mergeGeometries([geo, cloudGeo]);
   }
 
   const mesh = new THREE.Mesh(
     geo,
-    new THREE.MeshStandardMaterial({
+    new THREE.MeshPhysicalMaterial({
       envMap: envMap,
       envMapIntensity: 0.75,
       flatShading: true,
     })
   );
-  // return mesh;
-  scene.add(mesh);
+  return mesh;
 }
